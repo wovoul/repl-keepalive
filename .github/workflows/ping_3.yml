@@ -1,0 +1,15 @@
+name: keep-repl-alive-3
+on:
+  schedule:
+    - cron: "3-59/5 * * * *"
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Curl the Repl
+        run: |
+          URL="${{ secrets.PING_URL }}"
+          CODE=$(curl -m 10 -s -o /dev/null -w "%{http_code}" "$URL" || echo "000")
+          echo "HTTP $CODE"
+          if [ "$CODE" = "000" ]; then exit 1; fi
